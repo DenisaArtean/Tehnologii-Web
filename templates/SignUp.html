@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700&amp;display=swap&amp;_cacheOverride=1636477555658" rel="stylesheet">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css?_cacheOverride=1636477555659">
+  <link rel="stylesheet" href="../CSS/style2.css">
+  <title>Shop Management System</title>
+</head>
+
+<body>
+  <section class="ftco-section">
+		<div class="container">
+			<div class="row justify-content-center">
+			</div>
+			<div class="row justify-content-center">
+					<div class="login-wrap p-4 p-md-5 wi">
+		      	<div class="d-flex">
+		      		<div class="w-100">
+		      			<h2 class="mb-4">Sign Up</h2>
+		      		</div>
+		      	</div>
+
+						{% from "includes/formhelpers.html" import render_field %}
+
+						<form action="" method="POST" class="login-form">
+		      		<div class="form-group">
+		      			<div class="icon d-flex align-items-center justify-content-center"><span class="fa fa-user"></span></div>
+		      		 	{{render_field(form.first_name, class_="form-control form-control-user rounded-left", placeholder="Enter your First Name")}}
+		      		</div>
+              <div class="form-group">
+		      			<div class="icon d-flex align-items-center justify-content-center"><span class="fa fa-user"></span></div>
+		      			{{render_field(form.last_name, class_="form-control form-control-user rounded-left", placeholder="Enter your Last Name")}}
+		      		</div>
+              <div class="form-group">
+		      			<div class="icon d-flex align-items-center justify-content-center"><span class="fa fa-envelope"></span></div>
+		      			{{render_field(form.email, class_="form-control form-control-user rounded-left", type="email", placeholder="Email Address")}}
+		      		</div>
+	            <div class="form-group">
+	            	<div class="icon d-flex align-items-center justify-content-center"><span class="fa fa-lock"></span></div>
+	              {{render_field(form.password, class_="form-control form-control-user rounded-left",placeholder="Password")}}
+	            </div>
+              <div class="form-group">
+	            	<div class="icon d-flex align-items-center justify-content-center"><span class="fa fa-lock"></span></div>
+	              {{render_field(form.confirm, class_="form-control form-control-user rounded-left",placeholder="confirm password")}}>
+	            </div>
+	            <div class="form-group d-flex align-items-center">
+                <div class="w-100 d-flex">
+                  <a href="http://127.0.0.1:5000/login"><button type="button" class="btn btn-primary rounded submit">Back</button></a>
+                </div>
+								<div class="w-100 d-flex justify-content-end">
+		            	<button type="submit" class="btn btn-primary rounded submit">SignUp</button>
+	            	</div>
+	            </div>
+	          </form>
+				</div>
+			</div>
+		</div>
+	</section>
+</body>
+</html>

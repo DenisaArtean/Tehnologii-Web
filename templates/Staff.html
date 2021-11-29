@@ -1,0 +1,112 @@
+{% extends "Layout.html" %}
+{% block title %}Staff{% endblock %}
+{% block body %}
+
+      
+      <!-- Button trigger modal -->
+      <button type="button" class="btn btn-primary rounded" data-toggle="modal" data-target="#exampleModal">Add staff</button>
+
+      <!-- Modal-->
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Add new staff</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                <form  action=" " method="POST">
+
+                    <div class="form-group">
+                        <label for="exampleInput">First Name</label>
+                        <input type="text" class="form-control" name="firstname" id="exampleInput" placeholder="First Name">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="exampleInput1">Last Name</label>
+                        <input type="text" class="form-control" name="lastname" id="exampleInput1" placeholder="Last Name">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="exampleInput2">Position</label>
+                        <input type="text" class="form-control" name="position" id="exampleInput2" placeholder="Position">
+                    </div>
+
+                    <div class="form-group">
+                            <label for="exampleInput3">From</label>
+                            <input type="text" class="form-control" name="from" id="exampleInput3" placeholder="From (dd/mm/yyyy)">
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInput3">Until</label>
+                        <input type="text" class="form-control" name="until" id="exampleInput3" placeholder="Until (dd/mm/yyyy  OR  -  if he/she is still working)">
+                </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary rounded">Save changes</button>
+                </div>
+                </form>
+                </div>
+            </div>
+        </div>
+        <br><br>
+
+        <table class="table table-striped" id="dataTable">
+            <thead>
+          
+              <tr>
+                <th scope="col">First Name</th>
+                <th scope="col">Last Name</th>
+                <th scope="col">Position</th>
+                <th scope="col">From</th>
+                <th scope="col">Until</th>
+                <th scope="col">Action</th>
+              </tr>
+          
+            </thead>
+
+            <tbody>
+                <tr>
+                  <th>First Name</th>
+                  <td>Last Name</td>
+                  <td>Position</td>
+                  <td>From</td>
+                  <td>Until</td>
+                  <td> <a href="#"><button type="button" class="btn btn-primary btn-circle btn-sm"> <i class="fa fa-edit"></i></button></a>
+                      <a data-toggle="modal" data-target="#"><button type="button" class="btn btn-danger btn-circle btn-sm"> <i class="fas fa-trash-alt"></i></button></a>
+                  </td>
+                </tr>
+
+               <!-- delete model -->
+                <div class="modal fade" id="#" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                  <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="deleteModalLabel">Delete Product?</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <form action="#" method="POST">
+                          <input class="btn btn-danger" type="submit" value="Delete">
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            
+              </tbody>
+            </table>
+    
+
+
+   </div>
+  </div>
+
+{% endblock %}
