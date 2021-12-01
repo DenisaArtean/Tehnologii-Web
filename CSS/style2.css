@@ -13,14 +13,6 @@ body {
   padding: 7em 0;
 }
 
-.container {
-  width: 100%;
-  padding-right: 15px;
-  padding-left: 15px;
-  margin-right: auto;
-  margin-left: auto;
-}
-
 .justify-content-center {
   -webkit-box-pack: center !important;
   -ms-flex-pack: center !important;
@@ -57,10 +49,14 @@ body {
   border-radius: 5px 0 0 5px;
 }
 
+.form-group .icon-align{
+  top: 29px;
+}
 
 .form-group .icon span {
     color: #fff;
 }
+
 
 .fa {
   display: inline-block;
@@ -128,6 +124,7 @@ body {
   background: #99ceff;
   color: #333;
 }
+
 
 .wrapper {
   text-align: center;

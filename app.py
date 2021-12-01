@@ -1,4 +1,4 @@
-
+from flask import jsonify,make_response
 from flask import render_template
 from flask import redirect, url_for, request, flash 
 from flask_login import login_user, current_user, logout_user, login_required
@@ -31,30 +31,30 @@ def login():
 
             else:
                 error = "Invalid Password"
-                return render_template('login.html', error=error)
+                return render_template('Login.html', error=error)
 
         else:
             error = "Invalid email"
-            return render_template('login.html', error=error)
+            return render_template('Login.html', error=error)
 
-    return render_template('login.html')
+    return render_template('Login.html')
 
 @app.route('/signup', methods = ['POST', 'GET'])
 def signup():
     if current_user.is_authenticated:
         return redirect(url_for('dashboard'))
-    form1 = RegisterForm(request.form)
-    if request.method == 'POST' and form1.validate():
-        first_name = form1.first_name.data
-        last_name = form1.last_name.data
-        email = form1.email.data
-        password = sha256_crypt.encrypt(str(form1.password.data))
+    form = RegisterForm(request.form)
+    if request.method == 'POST' and form.validate():
+        first_name = form.first_name.data
+        last_name = form.last_name.data
+        email = form.email.data
+        password = sha256_crypt.encrypt(str(form.password.data))
         addd = User(first_name=first_name, last_name=last_name, email=email, password= password)
         db.session.add(addd)
         db.session.commit()
         flash('You are now registered', 'success')
         return redirect(url_for('login'))
-    return render_template('SignUp.html', form=form1)
+    return render_template('SignUp.html', form=form)
 
 @app.route('/dashboard')
 def dashboard():
