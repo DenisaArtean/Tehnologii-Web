@@ -15,3 +15,6 @@ class User(db.Model, UserMixin):
   password = db.Column(db.String(120),nullable=False)
   date_creation = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now())
 
+  def get_id(self):
+      return (self.user_id)
+

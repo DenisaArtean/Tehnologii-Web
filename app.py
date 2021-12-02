@@ -10,8 +10,13 @@ from models import User
 from passlib.hash import sha256_crypt
 from app_config import app, db, login_manager
 
-@app.route('/')
-@app.route('/login')
+def getlist():
+    user = User.query.filter_by(email=current_user.email).first()
+    my_list = user.Roles.split(",")
+    return my_list
+
+@app.route('/', methods=['POST','GET'])
+@app.route('/login', methods=['POST','GET'])
 def login():
     if current_user.is_authenticated:
         return redirect(url_for('dashboard'))
@@ -38,6 +43,12 @@ def login():
             return render_template('Login.html', error=error)
 
     return render_template('Login.html')
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('login'))
 
 @app.route('/signup', methods = ['POST', 'GET'])
 def signup():
