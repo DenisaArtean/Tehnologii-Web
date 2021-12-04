@@ -1,6 +1,6 @@
 from wtforms import Form,StringField, PasswordField
 from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
-from models import User
+from models import Users
 
 # Register Form Class
 class RegisterForm(Form):
@@ -10,7 +10,7 @@ class RegisterForm(Form):
     password = PasswordField('Password', validators=[DataRequired(),EqualTo('confirm', message='Passwords do not match')])
     confirm = PasswordField('Confirm Password')
     def validate_email(self, email):
-        user = User.query.filter_by(email=email.data).first()
+        user = Users.query.filter_by(email=email.data).first()
         if user:
             raise ValidationError('That email is taken. Please choose a different one.')
 

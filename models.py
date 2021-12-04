@@ -5,9 +5,9 @@ from flask_login import UserMixin
 
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.get(int(user_id))
+    return Users.query.get(int(user_id))
 
-class User(db.Model, UserMixin):
+class Users(db.Model, UserMixin):
   user_id = db.Column(db.Integer, primary_key=True)
   first_name = db.Column(db.String(120),nullable=False,unique=False)
   last_name = db.Column(db.String(120),nullable=False,unique=False)
