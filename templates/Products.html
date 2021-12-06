@@ -17,7 +17,7 @@
                 </div>
                 <div class="modal-body">
 
-                <form  action="#" method="POST">
+                <form  action=" " method="POST">
 
                     <div class="form-group">
                         <label for="exampleInput">Name of product</label>
@@ -64,18 +64,19 @@
             </thead>
 
             <tbody>
+              {% for product in products %}
                 <tr>
-                  <th>Name</th>
-                  <td>Barcode</td>
-                  <td>Quantity</td>
-                  <td>Price</td>
-                  <td> <a href="#"><button type="button" class="btn btn-primary btn-circle btn-sm"> <i class="fa fa-edit"></i></button></a>
-                      <a data-toggle="modal" data-target="#"><button type="button" class="btn btn-danger btn-circle btn-sm"> <i class="fas fa-trash-alt"></i></button></a>
+                  <th>{{product.name}}</th>
+                  <td>{{product.barcode}}</td>
+                  <td>{{product.quantity}}</td>
+                  <td>{{product.price}}</td>
+                  <td> <a href="/updateproduct/{{product.product_id}}"><button type="button" class="btn btn-primary btn-circle btn-sm"> <i class="fa fa-edit"></i></button></a>
+                      <a data-toggle="modal" data-target="#deleteModal{{product.product_id}}"><button type="button" class="btn btn-danger btn-circle btn-sm"> <i class="fas fa-trash-alt"></i></button></a>
                   </td>
                 </tr>
 
                <!-- delete model -->
-                <div class="modal fade" id="#" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                <div class="modal fade" id="deleteModal{{product.product_id}}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
                   <div class="modal-dialog" role="document">
                     <div class="modal-content">
                       <div class="modal-header">
@@ -86,14 +87,14 @@
                       </div>
                       <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <form action="#" method="POST">
+                        <form action="{{ url_for('delete_product', product_id=product.product_id) }}" method="POST">
                           <input class="btn btn-danger" type="submit" value="Delete">
                         </form>
                       </div>
                     </div>
                   </div>
                 </div>
-            
+                {% endfor %}
               </tbody>
             </table>
     
