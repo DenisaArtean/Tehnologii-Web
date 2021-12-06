@@ -32,6 +32,7 @@ class Stores(db.Model):
   staff = db.relationship('Staff',cascade="all,delete",backref='staff_store', lazy=True)
   expenses = db.relationship('Expenses',cascade="all,delete",backref='expenses_store', lazy=True)
   products = db.relationship('Products',cascade="all,delete",backref='products_store', lazy=True)
+  delivery = db.relationship('Delivery',cascade="all,delete",backref='delivery_store', lazy=True)
 
 
 
@@ -57,6 +58,13 @@ class Products(db.Model):
   barcode = db.Column(db.String(255), nullable=False,unique=True)
   quantity = db.Column(db.Integer, nullable=False,unique=False)
   price = db.Column(db.Float, nullable=False,unique=False)
+  store_id = db.Column(db.Integer,db.ForeignKey('stores.store_id'))
+
+class Delivery(db.Model):
+  delivery_id = db.Column(db.Integer, primary_key=True)
+  company = db.Column(db.String(255), nullable=False,unique=False)
+  quantity = db.Column(db.Integer, nullable=False,unique=False)
+  date = db.Column(db.Date, nullable=False,unique=False)
   store_id = db.Column(db.Integer,db.ForeignKey('stores.store_id'))
 
 
