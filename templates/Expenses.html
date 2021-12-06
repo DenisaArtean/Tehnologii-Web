@@ -61,36 +61,37 @@
             </thead>
 
             <tbody>
+              {% for expense in expenses %}
                 <tr>
-                  <th>Type</th>
-                  <td>Date</td>
-                  <td>Amount</td>
+                  <th>{{expense.type}}</th>
+                  <td>{{expense.date}}</td>
+                  <td>{{expense.amount}}</td>
                   <td> 
-                    <a href="#"><button type="button" class="btn btn-primary btn-circle btn-sm"> <i class="fa fa-edit"></i></button></a>
-                    <a data-toggle="modal" data-target="#"><button type="button" class="btn btn-danger btn-circle btn-sm"> <i class="fas fa-trash-alt"></i></button></a>
+                    <a href="/updateexpense/{{expense.store_id}}"><button type="button" class="btn btn-primary btn-circle btn-sm"> <i class="fa fa-edit"></i></button></a>
+                    <a data-toggle="modal" data-target="#deleteModal{{expense.store_id}}"><button type="button" class="btn btn-danger btn-circle btn-sm"> <i class="fas fa-trash-alt"></i></button></a>
                   </td>
                 </tr>
 
                <!-- delete model -->
-                <div class="modal fade" id="#" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                <div class="modal fade" id="deleteModal{{expense.store_id}}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
                   <div class="modal-dialog" role="document">
                     <div class="modal-content">
                       <div class="modal-header">
-                        <h5 class="modal-title" id="deleteModalLabel">Delete Expenses?</h5>
+                        <h5 class="modal-title" id="deleteModalLabel">Delete Expense?</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                           <span aria-hidden="true">&times;</span>
                         </button>
                       </div>
                       <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <form action="#" method="POST">
+                        <form action="{{ url_for('delete_expense', expense_id=expense.expense_id) }}" method="POST">
                           <input class="btn btn-danger" type="submit" value="Delete">
                         </form>
                       </div>
                     </div>
                   </div>
                 </div>
-            
+                {% endfor %}
               </tbody>
           </table>
     
