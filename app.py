@@ -4,7 +4,7 @@ from flask import redirect, url_for, request, flash, g
 from flask_login import login_user, current_user, logout_user, login_required
 
 from form import RegisterForm
-from models import Users, Stores, Staff, Expenses, Products
+from models import Users, Stores, Staff, Expenses, Products, Delivery
 from passlib.hash import sha256_crypt
 from app_config import app, db, login_manager
 
@@ -116,7 +116,7 @@ def products():
         return redirect(url_for('products'))
     return render_template('Products.html', products=products)
 
-@app.route("/updateproduct/<int:product_id>", methods=['POST','GET'])
+@app.route("/updateproducts/<int:product_id>", methods=['POST','GET'])
 @login_required
 def update_product(product_id):
     product = Products.query.get(product_id)
@@ -142,10 +142,41 @@ def delete_product(product_id):
 #-------------------------------------------------------------------------------------------------------------------------------DELIVERY---------
 
 
-@app.route('/delivery')
+@app.route('/delivery', methods=['POST','GET'])
 @login_required
 def delivery():
-    return render_template('Delivery.html')
+    store = request.cookies.get('storeID')
+    delivery = Delivery.query.filter(Delivery.store_id == store).all()
+    if request.method == 'POST':
+        company = request.form.get('company')
+        quantity = request.form.get('quantity')
+        date = request.form.get('date')
+        add = Delivery(company = company, quantity = quantity, date = date, store_id = store)
+        db.session.add(add)
+        db.session.commit()
+        return redirect(url_for('delivery'))
+    return render_template('Delivery.html', delivery=delivery)
+
+@app.route("/updatedelivery/<int:delivery_id>", methods=['POST','GET'])
+@login_required
+def update_delivery(delivery_id):
+    delivery = Delivery.query.get(delivery_id)
+    if request.method == 'POST':
+        delivery.company = request.form.get('company')
+        delivery.quantity = request.form.get('quantity')
+        delivery.date = request.form.get('date')
+        db.session.commit()
+        return redirect(url_for('delivery'))
+
+    return render_template('update_delivery.html',delivery=delivery)
+
+@app.route("/delivery/delete/<int:delivery_id>", methods=['POST'])
+@login_required
+def delete_delivery(delivery_id):
+    delivery = Delivery.query.get(delivery_id)
+    db.session.delete(delivery)
+    db.session.commit()
+    return redirect(url_for('delivery'))
 
 #-------------------------------------------------------------------------------------------------------------------------------EXPENSES---------
 
