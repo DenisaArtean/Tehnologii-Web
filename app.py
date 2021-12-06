@@ -4,7 +4,7 @@ from flask import redirect, url_for, request, flash, g
 from flask_login import login_user, current_user, logout_user, login_required
 
 from form import RegisterForm
-from models import Users, Stores, Staff, Expenses
+from models import Users, Stores, Staff, Expenses, Products
 from passlib.hash import sha256_crypt
 from app_config import app, db, login_manager
 
@@ -100,10 +100,43 @@ def dashboard():
 #----------------------------------------------------------------------------------------------------------------------------PRODUCTS---------
 
 
-@app.route('/products')
+@app.route('/products', methods=['POST','GET'])
 @login_required
 def products():
-    return render_template('Products.html')
+    store = request.cookies.get('storeID')
+    products = Products.query.filter(Products.store_id == store).all()
+    if request.method == 'POST':
+        name = request.form.get('name')
+        barcode = request.form.get('barcode')
+        quantity = request.form.get('quantity')
+        price = request.form.get('price')
+        add = Products(name = name, barcode = barcode, quantity = quantity, price = price, store_id = store)
+        db.session.add(add)
+        db.session.commit()
+        return redirect(url_for('products'))
+    return render_template('Products.html', products=products)
+
+@app.route("/updateproduct/<int:product_id>", methods=['POST','GET'])
+@login_required
+def update_product(product_id):
+    product = Products.query.get(product_id)
+    if request.method == 'POST':
+        product.name = request.form.get('name')
+        product.barcode = request.form.get('barcode')
+        product.quantity = request.form.get('quantity')
+        product.price = request.form.get('price')
+        db.session.commit()
+        return redirect(url_for('products'))
+
+    return render_template('update_product.html',product=product)
+
+@app.route("/product/delete/<int:product_id>", methods=['POST'])
+@login_required
+def delete_product(product_id):
+    product = Products.query.get(product_id)
+    db.session.delete(product)
+    db.session.commit()
+    return redirect(url_for('products'))
 
 
 #-------------------------------------------------------------------------------------------------------------------------------DELIVERY---------
