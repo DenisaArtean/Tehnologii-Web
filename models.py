@@ -29,6 +29,26 @@ class Stores(db.Model):
   address = db.Column(db.String(255), nullable=False,unique=False)
   ##store = db.relationship("user_store", secondary = user_store)
   user_id = db.Column(db.Integer,db.ForeignKey('users.user_id'))
+  staff = db.relationship('Staff',cascade="all,delete",backref='staff_store', lazy=True)
+  expenses = db.relationship('Expenses',cascade="all,delete",backref='expenses_store', lazy=True)
+
+
+
+class Staff(db.Model):
+  staff_id = db.Column(db.Integer, primary_key=True)
+  first_name = db.Column(db.String(255), nullable=False,unique=False)
+  last_name = db.Column(db.String(255), nullable=False,unique=False)
+  job = db.Column(db.String(255), nullable=False,unique=False)
+  start_date = db.Column(db.Date, nullable=False,unique=False)
+  end_date = db.Column(db.String, nullable=False,unique=False)
+  store_id = db.Column(db.Integer,db.ForeignKey('stores.store_id'))
+
+class Expenses(db.Model):
+  expense_id = db.Column(db.Integer, primary_key=True)
+  type = db.Column(db.String(255), nullable=False,unique=False)
+  date = db.Column(db.Date, nullable=False,unique=False)
+  amount = db.Column(db.Float, nullable=False,unique=False)
+  store_id = db.Column(db.Integer,db.ForeignKey('stores.store_id'))
 
 
 
