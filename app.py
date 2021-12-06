@@ -121,7 +121,7 @@ def delivery():
 @login_required
 def expenses():
     store = request.cookies.get('storeID')
-    expense = Expenses.query.filter(Expenses.store_id == store).all()
+    expenses = Expenses.query.filter(Expenses.store_id == store).all()
     if request.method == 'POST':
         type = request.form.get('type')
         date = request.form.get('date')
@@ -130,7 +130,28 @@ def expenses():
         db.session.add(add)
         db.session.commit()
         return redirect(url_for('expenses'))
-    return render_template('Expenses.html', expense=expense)
+    return render_template('Expenses.html', expenses=expenses)
+
+@app.route("/updateexpense/<int:expense_id>", methods=['POST','GET'])
+@login_required
+def update_expense(expense_id):
+    expense = Expenses.query.get(expense_id)
+    if request.method == 'POST':
+        expense.type = request.form.get('type')
+        expense.date = request.form.get('date')
+        expense.amount = request.form.get('amount')
+        db.session.commit()
+        return redirect(url_for('expenses'))
+
+    return render_template('update_expense.html',expense=expense)
+
+@app.route("/expense/delete/<int:expense_id>", methods=['POST'])
+@login_required
+def delete_expense(expense_id):
+    expense = Expenses.query.get(expense_id)
+    db.session.delete(expense)
+    db.session.commit()
+    return redirect(url_for('expenses'))
 
 
 #-------------------------------------------------------------------------------------------------------------------------SALES REPORT---------
