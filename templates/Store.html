@@ -1,5 +1,5 @@
 {% extends "Layout.html" %}
-{% block title %}Store{% endblock %}
+{% block title %}Stores{% endblock %}
 {% block body %}
   <!-- Button trigger modal -->
       <button type="button" class="btn btn-primary rounded" data-toggle="modal" data-target="#exampleModal">Add store</button>
@@ -57,18 +57,19 @@
             </thead>
 
             <tbody>
+              {% for store in stores %}
                 <tr>
-                  <th>type</th>
-                  <td>name</td>
-                  <td>address</td>
-                  <td> <a href="#"><button type="button" class="btn btn-primary btn-circle btn-sm"> <i class="fa fa-edit"></i></button></a>
-                      <a data-toggle="modal" data-target="#"><button type="button" class="btn btn-danger btn-circle btn-sm"> <i class="fas fa-trash-alt"></i></button></a>
-                      <a href="#"><button type="button" class="btn btn-select btn-circle btn-sm"> SELECT</button></a>
+                  <th>{{store.type}}</th>
+                  <td>{{store.name}}</td>
+                  <td>{{store.address}}</td>
+                  <td> <a href="/updatestore/{{store.store_id}}"><button type="button" class="btn btn-primary btn-circle btn-sm"> <i class="fa fa-edit"></i></button></a>
+                      <a data-toggle="modal" data-target="#deleteModal{{store.store_id}}"><button type="button" class="btn btn-danger btn-circle btn-sm"> <i class="fas fa-trash-alt"></i></button></a>
+                      <a href="/store/select/{{store.store_id}}"><button type="button" class="btn btn-select btn-circle btn-sm"> SELECT</button></a>
                   </td>
                 </tr>
 
                <!-- delete model -->
-                <div class="modal fade" id="#" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                <div class="modal fade" id="deleteModal{{store.store_id}}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
                   <div class="modal-dialog" role="document">
                     <div class="modal-content">
                       <div class="modal-header">
@@ -79,14 +80,14 @@
                       </div>
                       <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <form action="#" method="POST">
+                        <form action="{{ url_for('delete_store', store_id=store.store_id) }}" method="POST">
                           <input class="btn btn-danger" type="submit" value="Delete">
                         </form>
                       </div>
                     </div>
                   </div>
                 </div>
-            
+                {% endfor %}
               </tbody>
             </table>
     

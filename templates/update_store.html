@@ -1,0 +1,30 @@
+
+{% extends "Layout.html" %}
+{% block title %}Store{% endblock %}
+{% block body %}
+
+    <form  action=" " method="POST">
+
+      <div class="form-group">
+          <label for="exampleInput2">Type</label>
+          <input type="text" class="form-control" name="type" id="exampleInput2" value={{store.type}}>
+      </div>
+
+      <div class="form-group">
+          <label for="exampleInput">Name</label>
+          <input type="text" class="form-control" name="name" id="exampleInput" value={{store.name}}>
+      </div>
+
+      <div class="form-group">
+          <label for="exampleInput1">Address</label>
+          <input type="text" class="form-control" name="address" id="exampleInput1" value={{store.address}}>
+      </div>
+
+      <div class="">
+        <button type="submit" class="btn btn-success">Update</button>
+      </div>
+
+    </form>
+
+
+{% endblock %}
