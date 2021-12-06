@@ -4,15 +4,18 @@ from flask import redirect, url_for, request, flash, g
 from flask_login import login_user, current_user, logout_user, login_required
 
 from form import RegisterForm
-from models import Users, Stores
-
+from models import Users, Stores, Staff, Expenses
 from passlib.hash import sha256_crypt
 from app_config import app, db, login_manager
+
 
 def getlist():
     user = Users.query.filter_by(email=current_user.email).first()
     my_list = user.Roles.split(",")
     return my_list
+
+#-------------------------------------------------------------------------------------------------------------------------------LOG IN---------
+
 
 @app.route('/', methods=['POST','GET'])
 @app.route('/login', methods=['POST','GET'])
@@ -51,6 +54,10 @@ def login():
 
     return render_template('Login.html')
 
+
+#-------------------------------------------------------------------------------------------------------------------------------LOG OUT---------
+
+
 @app.route('/logout')
 @login_required
 def logout():
@@ -60,6 +67,9 @@ def logout():
     resp.delete_cookie('useremail')
     resp.delete_cookie('userpass')
     return resp
+
+#-------------------------------------------------------------------------------------------------------------------------------SIGN UP---------
+
 
 @app.route('/signup', methods = ['POST', 'GET'])
 def signup():
@@ -78,35 +88,103 @@ def signup():
         return redirect(url_for('login'))
     return render_template('SignUp.html', form=form)
 
+#------------------------------------------------------------------------------------------------------------------------------DASHBOARD---------
+
+
 @app.route('/dashboard')
 @login_required
 def dashboard():
     return render_template('Dashboard.html')
+
+
+#----------------------------------------------------------------------------------------------------------------------------PRODUCTS---------
+
 
 @app.route('/products')
 @login_required
 def products():
     return render_template('Products.html')
 
+
+#-------------------------------------------------------------------------------------------------------------------------------DELIVERY---------
+
+
 @app.route('/delivery')
 @login_required
 def delivery():
     return render_template('Delivery.html')
 
-@app.route('/expenses')
+#-------------------------------------------------------------------------------------------------------------------------------EXPENSES---------
+
+
+@app.route('/expenses', methods=['POST','GET'])
 @login_required
 def expenses():
-    return render_template('Expenses.html')
+    store = request.cookies.get('storeID')
+    expense = Expenses.query.filter(Expenses.store_id == store).all()
+    if request.method == 'POST':
+        type = request.form.get('type')
+        date = request.form.get('date')
+        amount = request.form.get('amount')
+        add = Expenses(type=type, date=date, amount=amount, store_id = store)
+        db.session.add(add)
+        db.session.commit()
+        return redirect(url_for('expenses'))
+    return render_template('Expenses.html', expense=expense)
+
+
+#-------------------------------------------------------------------------------------------------------------------------SALES REPORT---------
+
 
 @app.route('/salesreport')
 @login_required
 def salesreport():
     return render_template('SalesReport.html')
 
-@app.route('/staff')
+
+#-------------------------------------------------------------------------------------------------------------------------------STAFF---------
+
+@app.route('/staff', methods=['POST','GET'])
 @login_required
 def staff():
-    return render_template('Staff.html')
+    store = request.cookies.get('storeID')
+    staff = Staff.query.filter(Staff.store_id == store).all()
+    if request.method == 'POST':
+        first_name = request.form.get('firstname')
+        last_name = request.form.get('lastname')
+        job = request.form.get('job')
+        start_date = request.form.get('startdate')
+        end_date = request.form.get('enddate')
+        add = Staff(first_name=first_name, last_name=last_name, job=job, start_date=start_date, end_date=end_date, store_id = store)
+        db.session.add(add)
+        db.session.commit()
+        return redirect(url_for('staff'))
+    return render_template('Staff.html', staff=staff)
+
+@app.route("/updatestaff/<int:staff_id>", methods=['POST','GET'])
+@login_required
+def update_staff(staff_id):
+    staff = Staff.query.get(staff_id)
+    if request.method == 'POST':
+        staff.first_name = request.form.get('firstname')
+        staff.last_name = request.form.get('lastname')
+        staff.job = request.form.get('job')
+        staff.start_date = request.form.get('startdate')
+        staff.end_date = request.form.get('enddate')
+        db.session.commit()
+        return redirect(url_for('staff'))
+
+    return render_template('update_staff.html',staff=staff)
+
+@app.route("/staff/delete/<int:staff_id>", methods=['POST'])
+@login_required
+def delete_staff(staff_id):
+    staff = Stores.query.get(staff_id)
+    db.session.delete(staff)
+    db.session.commit()
+    return redirect(url_for('staff'))
+
+# --------------------------------------------------------------------------------------------------------------------------------STORE--------
 
 @app.route('/stores', methods=['POST','GET'])
 @login_required
@@ -128,7 +206,7 @@ def select_store(store_id):
     print(store_id, type(store_id))
     store = Stores.query.get(store_id)
     resp = make_response(redirect(url_for('stores')))
-    resp.set_cookie('storeID', sha256_crypt.encrypt(str(store_id)))
+    resp.set_cookie('storeID', str(store_id))
 
     return resp
 
@@ -152,6 +230,8 @@ def delete_store(store_id):
     db.session.delete(store)
     db.session.commit()
     return redirect(url_for('stores'))
+
+#--------------------------------------------------------------------------------------------------------------------------------------------
 
 if __name__ == "__main__":  # Makes sure this is the main process
 	app.run( # Starts the site
