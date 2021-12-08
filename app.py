@@ -1,10 +1,11 @@
+from re import S
 from flask import jsonify,make_response
 from flask import render_template
 from flask import redirect, url_for, request, flash, g
 from flask_login import login_user, current_user, logout_user, login_required
 
 from form import RegisterForm
-from models import Users, Stores, Staff, Expenses, Products, Delivery
+from models import Users, Stores, Staff, Expenses, Products, Delivery, Sales
 from passlib.hash import sha256_crypt
 from app_config import app, db, login_manager
 
@@ -221,10 +222,43 @@ def delete_expense(expense_id):
 #-------------------------------------------------------------------------------------------------------------------------SALES REPORT---------
 
 
-@app.route('/salesreport')
+@app.route('/salesreport', methods=['POST','GET'])
 @login_required
 def salesreport():
-    return render_template('SalesReport.html')
+    store = request.cookies.get('storeID')
+    sales = Sales.query.filter(Sales.store_id == store).all()
+    if request.method == 'POST':
+        date = request.form.get('date')
+        sales = request.form.get('sales')
+        refunded = request.form.get('refunded')
+        discounts = request.form.get('discounts')
+        add = Sales(date = date, sales = sales, refunded = refunded, discounts = discounts, store_id = store)
+        db.session.add(add)
+        db.session.commit()
+        return redirect(url_for('salesreport'))
+    return render_template('SalesReport.html', sales=sales)
+
+@app.route("/updatesalesreport/<int:sales_id>", methods=['POST','GET'])
+@login_required
+def update_salesreport(sales_id):
+    sales = Sales.query.get(sales_id)
+    if request.method == 'POST':
+        sales.date = request.form.get('date')
+        sales.sales = request.form.get('sales')
+        sales.refunded = request.form.get('refunded')
+        sales.discounts = request.form.get('discounts')
+        db.session.commit()
+        return redirect(url_for('salesreport'))
+
+    return render_template('update_sales_report.html',sales=sales)
+
+@app.route("/salesreport/delete/<int:sales_id>", methods=['POST'])
+@login_required
+def delete_salesreport(sales_id):
+    sales = Sales.query.get(sales_id)
+    db.session.delete(sales)
+    db.session.commit()
+    return redirect(url_for('salesreport'))
 
 
 #-------------------------------------------------------------------------------------------------------------------------------STAFF---------

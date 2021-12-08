@@ -1,0 +1,32 @@
+{% extends "Layout.html" %}
+{% block title %}Sales Report{% endblock %}
+{% block body %}
+  <form  action=" " method="POST">
+
+    <div class="form-group">
+        <label for="exampleInput2">Date</label>
+        <input type="text" class="form-control" name="date" id="exampleInput2" placeholder="{{sales.date}}">
+    </div>
+
+    <div class="form-group">
+        <label for="exampleInput">Sales</label>
+        <input type="text" class="form-control" name="sales" id="exampleInput" placeholder="{{sales.sales}}">
+    </div>
+ 
+    <div class="form-group">
+        <label for="exampleInput1">Refunded</label>
+        <input type="text" class="form-control" name="refunded" id="exampleInput1" placeholder="{{sales.refunded}}">
+    </div>
+
+    <div class="form-group">
+        <label for="exampleInput1">Discounts</label>
+        <input type="text" class="form-control" name="discounts" id="exampleInput1" placeholder="{{sales.discounts}}">
+    </div>
+
+    <div class="">
+      <button type="submit" class="btn btn-success">Update</button>
+    </div>
+
+  </form>
+
+{% endblock %}
