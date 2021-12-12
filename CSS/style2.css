@@ -207,6 +207,44 @@ a {
 }
 
 
+/* ALERT */
+.alert {
+  position: relative;
+  padding: 0.75rem 1.25rem;
+  margin-bottom: 1rem;
+  border: 1px solid transparent;
+  border-radius: 0.35rem;
+}
+
+.alert-success {
+  color: #0f6848;
+  background-color: #d2f4e8;
+  border-color: #bff0de;
+}
+
+.alert-danger {
+  color: #78261f;
+  background-color: #fadbd8;
+  border-color: #f8ccc8;
+}
+
+.alert-link {
+  font-weight: 700;
+}
+
+.alert-dismissible {
+  padding-right: 4rem;
+}
+
+.alert-dismissible .close {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 0.75rem 1.25rem;
+  color: inherit;
+}
+
+
 
 
 
