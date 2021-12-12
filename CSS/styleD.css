@@ -6,6 +6,12 @@ body {
     background: #fafafa;
 }
 
+.text-color{
+
+  color: #99ceff;
+
+}
+
 p {
     font-family: 'Poppins', sans-serif;
     font-size: 1.1em;

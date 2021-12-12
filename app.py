@@ -6,8 +6,10 @@ from flask_login import login_user, current_user, logout_user, login_required
 
 from form import RegisterForm
 from models import Users, Stores, Staff, Expenses, Products, Delivery, Sales
-from passlib.hash import sha256_crypt
+from passlib.hash import sha256_crypt, bcrypt
 from app_config import app, db, login_manager
+from sqlalchemy import func
+from datetime import date, timedelta
 
 
 def getlist():
@@ -26,8 +28,8 @@ def login():
         return redirect(url_for('dashboard'))
     #if request.cookies.get('useremail') & request.cookies.get('userpass'):
      #   if(sha256_crypt.verify(request.cookies.get('useremail'), current_user.email) & sha256_crypt.verify(request.cookies.get('userpass'), current_user.password)):
-      #      user=Users.query.filter_by(email=sha256_crypt.decrypt(request.cookies.get('useremail'))).first()
-       #     login_user(user)
+      #      user=Users.query.filter_by(email=current_user.email).first()
+       #      login_user(user)
     if request.method == 'POST':
         # Get Form Fields
         email = request.form['email']
@@ -41,8 +43,8 @@ def login():
                 login_user(user)
                 #flash('You are now logged in', 'success')
                 resp = make_response(redirect(url_for('dashboard')))
-                resp.set_cookie('useremail', sha256_crypt.encrypt(str(email)))
-                resp.set_cookie('userpass', sha256_crypt.encrypt(str(password_candidate)))
+                resp.set_cookie('useremail', (sha256_crypt.encrypt(str(email))))
+                resp.set_cookie('userpass', (sha256_crypt.encrypt(str(password_candidate))))
                 return resp
 
             else:
@@ -95,7 +97,35 @@ def signup():
 @app.route('/dashboard')
 @login_required
 def dashboard():
-    return render_template('Dashboard.html')
+    store = request.cookies.get('storeID')
+    sales = Sales.query.filter(Sales.store_id == store).filter(func.date(Sales.date) > date.today()-timedelta(days=7)).all()
+    sum = 0
+    for i in sales:
+        sum = sum + i.sales
+
+    staff = Staff.query.filter(Staff.store_id == store).filter(Staff.end_date == "-").all()
+    count_staff = 0
+    for j in staff:
+        count_staff = count_staff + 1
+    
+
+    products = Products.query.filter(Products.store_id == store).all()
+    count_products = 0
+    for k in products:
+        count_products = count_products + k.quantity
+
+    expenses = Expenses.query.filter(Expenses.store_id == store).filter(func.date(Expenses.date) > date.today()-timedelta(days=28)).all()
+    exp = 0
+    for l in expenses:
+        exp = exp + l.amount
+
+    context = {
+        "weekly": sum,
+        "expenses": exp,
+        "products": count_products,
+        "staff": count_staff
+    }
+    return render_template('Dashboard.html', context = context)
 
 
 #----------------------------------------------------------------------------------------------------------------------------PRODUCTS---------
@@ -117,7 +147,7 @@ def products():
         return redirect(url_for('products'))
     return render_template('Products.html', products=products)
 
-@app.route("/updateproducts/<int:product_id>", methods=['POST','GET'])
+@app.route("/updateproduct/<int:product_id>", methods=['POST','GET'])
 @login_required
 def update_product(product_id):
     product = Products.query.get(product_id)

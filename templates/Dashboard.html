@@ -2,4 +2,78 @@
 {% block title %}Dashboard{% endblock %}
 {% block body %}
 
+  <div class="row">
+    <div class="col-xl-3 col-md-6 mb-4">
+      <div class="card border-left-primary shadow h-100 py-2">
+        <div class="card-body">
+          <div class="row no-gutters align-items-center">
+            <div class="col mr-2">
+              <div class="text-xs font-weight-bold text-color text-uppercase mb-1">Sales (WEEKLY)</div>
+              <div class="h5 mb-0 font-weight-bold text-secondary">{{context['weekly']}} RON</div>
+            </div>
+            <div class="col-auto">
+              <i class="fas fa-calendar fa-2x text-secondary"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+      <div class="card border-left-success shadow h-100 py-2">
+        <div class="card-body">
+          <div class="row no-gutters align-items-center">
+            <div class="col mr-2">
+              <div class="text-xs font-weight-bold text-color text-uppercase mb-1">Expenses (MONTHLY)</div>
+              <div class="h5 mb-0 font-weight-bold text-secondary">{{context["expenses"]}} RON</div>
+            </div>
+            <div class="col-auto">
+              <i class="fas fa-dollar-sign fa-2x text-secondary"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+      <div class="card border-left-info shadow h-100 py-2">
+        <div class="card-body">
+          <div class="row no-gutters align-items-center">
+            <div class="col mr-2">
+              <div class="text-xs font-weight-bold text-color text-uppercase mb-1">Products </div>
+              <div class="h5 mb-0 font-weight-bold text-secondary">{{context["products"]}}</div>
+                </div>
+                <div class="col-auto">
+                  <i class="fas fa-table fa-2x text-secondary"></i>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+      <div class="card border-left-info shadow h-100 py-2">
+        <div class="card-body">
+          <div class="row no-gutters align-items-center">
+            <div class="col mr-2">
+              <div class="text-xs font-weight-bold text-color text-uppercase mb-1">Staff </div>
+              <div class="h5 mb-0 font-weight-bold text-secondary">{{context["staff"]}}</div>
+                </div>
+                <div class="col-auto">
+                  <i class="fas fa-users fa-2x text-secondary"></i>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="row">
+
+    <!-- Area Chart -->
+    <div class="col-xl-12 col-lg-7">
+      <img src="{{url_for('static', filename='img/Chart.png')}}"  width="1150" height="450"> 
+
+
 {% endblock %}
