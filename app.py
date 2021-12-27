@@ -3,6 +3,7 @@ from flask import jsonify,make_response
 from flask import render_template
 from flask import redirect, url_for, request, flash, g
 from flask_login import login_user, current_user, logout_user, login_required
+from flask_paginate import Pagination, get_page_parameter
 
 from form import RegisterForm
 from models import Users, Stores, Staff, Expenses, Products, Delivery, Sales
@@ -10,6 +11,8 @@ from passlib.hash import sha256_crypt, bcrypt
 from app_config import app, db, login_manager
 from sqlalchemy import func
 from datetime import date, timedelta
+
+
 
 
 def getlist():
@@ -114,11 +117,11 @@ def dashboard():
     for k in products:
         count_products = count_products + k.quantity
 
-    expenses = Expenses.query.filter(Expenses.store_id == store).filter(func.date(Expenses.date) > date.today()-timedelta(days=28)).all()
+    expenses = Expenses.query.filter(Expenses.store_id == store).filter(func.date(Expenses.date) > date.today()-timedelta(days=30)).all()
     exp = 0
     for l in expenses:
         exp = exp + l.amount
-
+ 
     context = {
         "weekly": sum,
         "expenses": exp,
@@ -134,8 +137,9 @@ def dashboard():
 @app.route('/products', methods=['POST','GET'])
 @login_required
 def products():
+    page = request.args.get('page', 1, type=int)
     store = request.cookies.get('storeID')
-    products = Products.query.filter(Products.store_id == store).all()
+    products = Products.query.filter(Products.store_id == store).paginate(page = page, per_page = 5)
     if request.method == 'POST':
         name = request.form.get('name')
         barcode = request.form.get('barcode')
@@ -145,6 +149,7 @@ def products():
         db.session.add(add)
         db.session.commit()
         return redirect(url_for('products'))
+    
     return render_template('Products.html', products=products)
 
 @app.route("/updateproduct/<int:product_id>", methods=['POST','GET'])
@@ -176,8 +181,9 @@ def delete_product(product_id):
 @app.route('/delivery', methods=['POST','GET'])
 @login_required
 def delivery():
+    page = request.args.get('page', 1, type=int)
     store = request.cookies.get('storeID')
-    delivery = Delivery.query.filter(Delivery.store_id == store).all()
+    delivery = Delivery.query.filter(Delivery.store_id == store).paginate(page = page, per_page = 5)
     if request.method == 'POST':
         company = request.form.get('company')
         quantity = request.form.get('quantity')
@@ -215,8 +221,9 @@ def delete_delivery(delivery_id):
 @app.route('/expenses', methods=['POST','GET'])
 @login_required
 def expenses():
+    page = request.args.get('page', 1, type=int)
     store = request.cookies.get('storeID')
-    expenses = Expenses.query.filter(Expenses.store_id == store).all()
+    expenses = Expenses.query.filter(Expenses.store_id == store).paginate(page = page, per_page = 5)
     if request.method == 'POST':
         type = request.form.get('type')
         date = request.form.get('date')
@@ -255,8 +262,9 @@ def delete_expense(expense_id):
 @app.route('/salesreport', methods=['POST','GET'])
 @login_required
 def salesreport():
+    page = request.args.get('page', 1, type=int)
     store = request.cookies.get('storeID')
-    sales = Sales.query.filter(Sales.store_id == store).all()
+    sales = Sales.query.filter(Sales.store_id == store).paginate(page = page, per_page = 5)
     if request.method == 'POST':
         date = request.form.get('date')
         sales = request.form.get('sales')
@@ -296,8 +304,9 @@ def delete_salesreport(sales_id):
 @app.route('/staff', methods=['POST','GET'])
 @login_required
 def staff():
+    page = request.args.get('page', 1, type=int)
     store = request.cookies.get('storeID')
-    staff = Staff.query.filter(Staff.store_id == store).all()
+    staff = Staff.query.filter(Staff.store_id == store).paginate(page = page, per_page = 5)
     if request.method == 'POST':
         first_name = request.form.get('firstname')
         last_name = request.form.get('lastname')
@@ -338,7 +347,8 @@ def delete_staff(staff_id):
 @app.route('/stores', methods=['POST','GET'])
 @login_required
 def stores():
-    stores = Stores.query.filter(Stores.user_store == current_user).all()
+    page = request.args.get('page', 1, type=int)
+    stores = Stores.query.filter(Stores.user_store == current_user).paginate(page = page, per_page = 5)
     if request.method == 'POST':
         type = request.form.get('type')
         name = request.form.get('name')

@@ -60,7 +60,7 @@
             </thead>
 
             <tbody>
-              {% for deliver in delivery %}
+              {% for deliver in delivery.items %}
                 <tr>
                   <th>{{deliver.company}}</th>
                   <td>{{deliver.quantity}}</td>
@@ -92,6 +92,14 @@
             {%endfor%}
               </tbody>
             </table>
+
+            {% for page_num in delivery.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=1) %}
+            {% if delivery.page == page_num %}
+            <a class="btn btn-info  mb-4" href="{{ url_for('delivery', page=page_num)}}">{{page_num}}</a>
+            {% else %}
+            <a class="btn btn-outline-info mb-4" href="{{ url_for('delivery', page=page_num)}}">{{page_num}}</a>
+            {% endif %} 
+            {% endfor %}
     
 
 
