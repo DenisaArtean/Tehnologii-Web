@@ -61,7 +61,7 @@
             </thead>
 
             <tbody>
-              {% for expense in expenses %}
+              {% for expense in expenses.items %}
                 <tr>
                   <th>{{expense.type}}</th>
                   <td>{{expense.date}}</td>
@@ -94,6 +94,14 @@
                 {% endfor %}
               </tbody>
           </table>
+
+          {% for page_num in expenses.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=1) %}
+            {% if expenses.page == page_num %}
+            <a class="btn btn-info  mb-4" href="{{ url_for('expenses', page=page_num)}}">{{page_num}}</a>
+            {% else %}
+            <a class="btn btn-outline-info mb-4" href="{{ url_for('expenses', page=page_num)}}">{{page_num}}</a>
+            {% endif %} 
+            {% endfor %}
     
 
 

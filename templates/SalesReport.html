@@ -64,7 +64,7 @@
             </thead>
 
             <tbody>
-              {% for sale in sales %}
+              {% for sale in sales.items %}
                 <tr>
                   <th>{{sale.date}}</th>
                   <td>{{sale.sales}}</td>
@@ -99,5 +99,13 @@
                 {% endfor %}
               </tbody>
             </table>
+
+            {% for page_num in sales.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=1) %}
+            {% if sales.page == page_num %}
+            <a class="btn btn-info  mb-4" href="{{ url_for('salesreport', page=page_num)}}">{{page_num}}</a>
+            {% else %}
+            <a class="btn btn-outline-info mb-4" href="{{ url_for('salesreport', page=page_num)}}">{{page_num}}</a>
+            {% endif %} 
+            {% endfor %}
     
 {% endblock %}

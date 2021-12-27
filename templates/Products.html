@@ -64,7 +64,7 @@
             </thead>
 
             <tbody>
-              {% for product in products %}
+              {% for product in products.items %}
                 <tr>
                   <th>{{product.name}}</th>
                   <td>{{product.barcode}}</td>
@@ -97,6 +97,17 @@
                 {% endfor %}
               </tbody>
             </table>
+
+            {% for page_num in products.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=1) %}
+            {% if products.page == page_num %}
+            <a class="btn btn-info  mb-4" href="{{ url_for('products', page=page_num)}}">{{page_num}}</a>
+            {% else %}
+            <a class="btn btn-outline-info mb-4" href="{{ url_for('products', page=page_num)}}">{{page_num}}</a>
+            {% endif %} 
+            {% endfor %}
+
+
+
     
 
    </div>
