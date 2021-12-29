@@ -3,14 +3,17 @@ from flask import jsonify,make_response
 from flask import render_template
 from flask import redirect, url_for, request, flash, g
 from flask_login import login_user, current_user, logout_user, login_required
-from flask_paginate import Pagination, get_page_parameter
+from flask_paginate import Pagination
 
 from form import RegisterForm
 from models import Users, Stores, Staff, Expenses, Products, Delivery, Sales
 from passlib.hash import sha256_crypt, bcrypt
 from app_config import app, db, login_manager
-from sqlalchemy import func
+from sqlalchemy import func, extract
 from datetime import date, timedelta
+import json
+from decimal import Decimal
+
 
 
 
@@ -128,7 +131,57 @@ def dashboard():
         "products": count_products,
         "staff": count_staff
     }
-    return render_template('Dashboard.html', context = context)
+
+    dates = db.session.query(db.func.sum(Sales.sales), Sales.date).group_by(Sales.date).order_by(Sales.date).filter(extract('year', Sales.date)==extract('year', date.today())).filter(Sales.store_id == store).all()
+
+    dates_sales = []
+    sales_by = []
+    for amount, datee in dates:
+        dates_sales.append(datee.strftime("%y-%m-%d"))
+        sales_by.append(amount)
+
+
+    s = db.session.query(db.func.sum(Sales.sales), extract('month', Sales.date)).group_by(extract('year', Sales.date), extract('month', Sales.date)).order_by(extract('year', Sales.date)).filter(extract('year', Sales.date)==extract('year', date.today())).filter(Sales.store_id == store).all()
+    dates_month_sales = []
+    sales_by_1 = []
+    for amount1, month in s:
+        dates_month_sales.append(int(month))
+        sales_by_1.append(amount1)
+
+
+    em = db.session.query(db.func.sum(Expenses.amount), extract('month', Expenses.date)).group_by(extract('year', Expenses.date), extract('month', Expenses.date)).order_by(extract('year', Expenses.date)).filter(extract('year', Expenses.date)==extract('year', date.today())).filter(Expenses.store_id == store).all()
+    dates_expenses = []
+    expenses_by = []
+    for amount2, month in em:
+        dates_expenses.append(int(month))
+        expenses_by.append(amount2)
+
+    
+    sa = db.session.query(db.func.sum(Sales.sales), extract('year', Sales.date)).group_by(extract('year', Sales.date)).order_by(extract('year', Sales.date)).filter(Sales.store_id == store).all()
+    years_sales = []
+    sales_by_2 = []
+    for amount3, year in sa:
+        years_sales.append(int(year))
+        sales_by_2.append(amount3)
+
+    ea = db.session.query(db.func.sum(Expenses.amount), extract('year', Expenses.date)).group_by(extract('year', Expenses.date)).order_by(extract('year', Expenses.date)).filter(Expenses.store_id == store).all()
+    years_expenses = []
+    expenses_by_1 = []
+    for amount4, year in ea:
+        years_expenses.append(int(year))
+        expenses_by_1.append(amount4)
+
+    return render_template('Dashboard.html', context = context, 
+                            dates_sales = json.dumps(dates_sales), 
+                            sales_by = json.dumps(sales_by),
+                            dates_month_sales = json.dumps(dates_month_sales),
+                            sales_by_1 = json.dumps(sales_by_1),
+                            dates_expenses = json.dumps(dates_expenses),
+                            expenses_by = json.dumps(expenses_by),
+                            years_sales = json.dumps(years_sales),
+                            sales_by_2 = json.dumps(sales_by_2),
+                            years_expenses = json.dumps(years_expenses),
+                            expenses_by_1 = json.dumps(expenses_by_1))
 
 
 #----------------------------------------------------------------------------------------------------------------------------PRODUCTS---------
