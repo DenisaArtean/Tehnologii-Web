@@ -72,8 +72,273 @@
   <div class="row">
 
     <!-- Area Chart -->
-    <div class="col-xl-12 col-lg-7">
-      <img src="{{url_for('static', filename='img/Chart.png')}}"  width="1150" height="450"> 
+
+    <!-- <div class="col-xl-12 col-lg-7">
+      <img src="{{url_for('static', filename='img/Chart.png')}}"  width="1150" height="450">  -->
+
+      <div class="col-xl-12 col-lg-7">
+        <div class="card shadow mb-4">
+          <!-- Card Header - Dropdown -->
+          <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+            <h6 class="m-0 font-weight-bold text-color-1"> Overview</h6>
+            <div class="dropdown no-arrow">
+              <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+              </a>
+              <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
+                <div class="dropdown-header"></div>
+                <a class="dropdown-item" onclick="myDailyS()">Daily Sales Overview</a>
+                <a class="dropdown-item" onclick="myMonthlyS()">Monthly Sales Overview</a>
+                <a class="dropdown-item" onclick="myAnnualS()">Annual Sales Overview</a>
+                <div class="dropdown-divider"></div> 
+                <a class="dropdown-item" onclick="myMonthlyE()">Monthly Expenses Overview</a>
+                <a class="dropdown-item" onclick="myAnnualE()">Annual Expenses Overview</a>
+              </div>
+            </div>
+          </div>
+          <!-- Card Body -->
+          <div class="card-body" id="chart1" >
+            <div class="chart-area">
+              <canvas id="myChart"></canvas>
+            </div>
+          </div>
+
+          <div class="card-body" id="chart2" style="display:none;" >
+            <div class="chart-area">
+              <canvas id="myChart1"></canvas>
+            </div>
+          </div>
+
+          <div class="card-body" id="chart3" style="display:none;">
+            <div class="chart-area">
+              <canvas id="myChart2"></canvas>
+            </div>
+          </div>
+
+          <div class="card-body" id="chart4" style="display:none;">
+            <div class="chart-area">
+              <canvas id="myChart3"></canvas>
+            </div>
+          </div>
+
+          <div class="card-body" id="chart5" style="display:none;>
+            <div class="chart-area">
+              <canvas id="myChart4"></canvas>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+    
+<!--  .................................................................................................JAVASCRIPT....................  -->
+    
+      <script>
+      const ctx = document.getElementById('myChart').getContext('2d');
+      const ctx1 = document.getElementById('myChart1').getContext('2d');
+      const ctx2 = document.getElementById('myChart2').getContext('2d');
+      const ctx3 = document.getElementById('myChart3').getContext('2d');
+      const ctx4 = document.getElementById('myChart4').getContext('2d');
+
+      sales_by = JSON.parse({{sales_by | tojson}})
+      labels = JSON.parse({{ dates_sales  | tojson}})
+
+      const myChart = new Chart(ctx, {
+          type: 'line',
+          data: {
+              labels: labels,
+              datasets: [{
+                  label: 'Daily Sales - Current Year',
+                  data: sales_by,
+                  backgroundColor: [
+                      'rgb(153, 206, 255)',
+                      
+                  ],
+                  borderColor: [
+                  'rgb(153, 206, 255)'
+                  ],
+                  borderWidth: 1
+              }]
+          },
+          options: {
+              scales: {
+                  y: {
+                      beginAtZero: true
+                  } 
+              }
+          }
+      });
+
+      sales_by_1 = JSON.parse({{sales_by_1 | tojson}})
+      labels_month = JSON.parse({{ dates_month_sales  | tojson}})
+
+
+      const myChart1 = new Chart(ctx1, {
+        type: 'bar',
+        data: {
+            labels: labels_month,
+            datasets: [{
+                label: 'Monthly Sales - Current Year',
+                data: sales_by_1,
+                backgroundColor: [
+                    'rgb(153, 206, 255)',
+                    
+                ],
+                borderColor: [
+                'rgb(153, 206, 255)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                } 
+            }
+        }
+    });
+
+
+    years_sales = JSON.parse({{years_sales | tojson}})
+    sales_by_2 = JSON.parse({{ sales_by_2 | tojson}})
+
+      const myChart2 = new Chart(ctx2, {
+        type: 'bar',
+        data: {
+            labels: years_sales,
+            datasets: [{
+                label: 'Annual Sales',
+                data: sales_by_2,
+                backgroundColor: [
+                    'rgb(153, 206, 255)',
+                    
+                ],
+                borderColor: [
+                'rgb(153, 206, 255)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                } 
+            }
+        }
+    });
+
+
+    expenses_by = JSON.parse({{expenses_by | tojson}})
+    dates_expenses = JSON.parse({{ dates_expenses | tojson}})
+
+      const myChart3 = new Chart(ctx3, {
+        type: 'bar',
+        data: {
+            labels: dates_expenses,
+            datasets: [{
+                label: 'Monthly Expenses - Current Year',
+                data: expenses_by,
+                backgroundColor: [
+                    'rgb(153, 206, 255)'
+                    
+                ],
+                borderColor: [
+                'rgb(153, 206, 255)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                } 
+            }
+        }
+    });
+
+    expenses_by_1 = JSON.parse({{expenses_by_1 | tojson}})
+    years_expenses = JSON.parse({{ years_expenses | tojson}})
+
+      const myChart4 = new Chart(ctx4, {
+        type: 'bar',
+        data: {
+            labels: years_sales,
+            datasets: [{
+                label: 'Annual Expenses',
+                data: expenses_by_1,
+                backgroundColor: [
+                    'rgb(153, 206, 255)'
+                    
+                ],
+                borderColor: [
+                'rgb(153, 206, 255)'
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                } 
+            }
+        }
+    });
+
+
+
+    
+
+
+
+
+
+    function myDailyS() {
+      document.getElementById("chart1").style.display = "block";
+      document.getElementById("chart2").style.display = "none";
+      document.getElementById("chart3").style.display = "none";
+      document.getElementById("chart4").style.display = "none";
+      document.getElementById("chart5").style.display = "none";
+    }
+
+    function myMonthlyS() {
+      document.getElementById("chart1").style.display = "none";
+      document.getElementById("chart2").style.display = "block";
+      document.getElementById("chart3").style.display = "none";
+      document.getElementById("chart4").style.display = "none";
+      document.getElementById("chart5").style.display = "none";
+    }
+
+    function myAnnualS() {
+      document.getElementById("chart1").style.display = "none";
+      document.getElementById("chart2").style.display = "none";
+      document.getElementById("chart3").style.display = "block";
+      document.getElementById("chart4").style.display = "none";
+      document.getElementById("chart5").style.display = "none";
+    }
+
+    function myMonthlyE() {
+      document.getElementById("chart1").style.display = "none";
+      document.getElementById("chart2").style.display = "none";
+      document.getElementById("chart3").style.display = "none";
+      document.getElementById("chart4").style.display = "block";
+      document.getElementById("chart5").style.display = "none";
+    }
+
+    function myAnnualE() {
+      document.getElementById("chart1").style.display = "none";
+      document.getElementById("chart2").style.display = "none";
+      document.getElementById("chart3").style.display = "none";
+      document.getElementById("chart4").style.display = "none";
+      document.getElementById("chart5").style.display = "block";
+    }
+
+      </script>
+
 
 
 {% endblock %}
