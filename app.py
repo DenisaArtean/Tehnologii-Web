@@ -3,11 +3,15 @@ from flask import jsonify,make_response
 from flask import render_template
 from flask import redirect, url_for, request, flash, g
 from flask_login import login_user, current_user, logout_user, login_required
+import flask_login
 from flask_paginate import Pagination
+from sqlalchemy.orm import session
+from flask import session as sessi
+
 
 from form import RegisterForm
 from models import Users, Stores, Staff, Expenses, Products, Delivery, Sales
-from passlib.hash import sha256_crypt, bcrypt
+from passlib.hash import bcrypt
 from app_config import app, db, login_manager
 from sqlalchemy import func, extract
 from datetime import date, timedelta
@@ -26,16 +30,23 @@ def getlist():
 #-------------------------------------------------------------------------------------------------------------------------------LOG IN---------
 
 
+#def index():
+ #   if not sessi.get("email"):
+  #      return redirect(url_for('login'))
+   # return render_template('Layout.html')
+
 @app.route('/', methods=['POST','GET'])
 @app.route('/login', methods=['POST','GET'])
 def login():
     
     if current_user.is_authenticated:
         return redirect(url_for('dashboard'))
+
     #if request.cookies.get('useremail') & request.cookies.get('userpass'):
      #   if(sha256_crypt.verify(request.cookies.get('useremail'), current_user.email) & sha256_crypt.verify(request.cookies.get('userpass'), current_user.password)):
       #      user=Users.query.filter_by(email=current_user.email).first()
        #      login_user(user)
+
     if request.method == 'POST':
         # Get Form Fields
         email = request.form['email']
@@ -45,13 +56,16 @@ def login():
         if user:
 
             passwordd=Users.query.filter_by(email=email).first()
-            if sha256_crypt.verify(password_candidate, passwordd.password):
+            if bcrypt.verify(password_candidate, passwordd.password):
                 login_user(user)
+                return redirect(url_for('dashboard'))
+
                 #flash('You are now logged in', 'success')
-                resp = make_response(redirect(url_for('dashboard')))
-                resp.set_cookie('useremail', (sha256_crypt.encrypt(str(email))))
-                resp.set_cookie('userpass', (sha256_crypt.encrypt(str(password_candidate))))
-                return resp
+                #resp = make_response(redirect(url_for('dashboard')))
+                #resp.set_cookie('useremail', (bcrypt.hash(str(email))))
+                #sessi["email"] = email
+                #resp.set_cookie('userpass', (bcrypt.hash(str(password_candidate))))
+                #return resp
 
             else:
                 error = "Invalid Password"
@@ -70,6 +84,7 @@ def login():
 @app.route('/logout')
 @login_required
 def logout():
+    sessi["email"] = None
     logout_user()
     resp = make_response(redirect(url_for('login')))
     resp.delete_cookie('storeID')
@@ -89,7 +104,7 @@ def signup():
         first_name = form.first_name.data
         last_name = form.last_name.data
         email = form.email.data
-        password = sha256_crypt.encrypt(str(form.password.data))
+        password = bcrypt.hash(str(form.password.data))
         addd = Users(first_name=first_name, last_name=last_name, email=email, password= password)
         db.session.add(addd)
         db.session.commit()
