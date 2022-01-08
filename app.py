@@ -21,12 +21,6 @@ from decimal import Decimal
 
 
 
-
-def getlist():
-    user = Users.query.filter_by(email=current_user.email).first()
-    my_list = user.Roles.split(",")
-    return my_list
-
 #-------------------------------------------------------------------------------------------------------------------------------LOG IN---------
 
 
