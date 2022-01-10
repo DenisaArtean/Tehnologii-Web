@@ -3,7 +3,6 @@ from flask import jsonify,make_response
 from flask import render_template
 from flask import redirect, url_for, request, flash, g
 from flask_login import login_user, current_user, logout_user, login_required
-import flask_login
 from flask_paginate import Pagination
 from sqlalchemy.orm import session
 from flask import session as sessi
